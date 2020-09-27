@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 from samplebase import SampleBase
+from rgbmatrix import graphics
 import random as rand
+import time
 
 
 class SpreadingColour(SampleBase):
@@ -9,7 +11,7 @@ class SpreadingColour(SampleBase):
         self.parser.add_argument("--protected", help="The Percentage protected",type=int, default=50)
 
     def run(self):
-        
+
         PERCENTAGE_VAC = self.args.protected
         
         print("Percentage Protected:  ", PERCENTAGE_VAC)
@@ -19,6 +21,8 @@ class SpreadingColour(SampleBase):
         final_infection_number = spread_sequence(self, matrix_mapper)
         
         print("Number of Infected", final_infection_number)
+        
+        printToSreen(self, final_infection_number)
 
 
             
@@ -70,11 +74,11 @@ def start_sequence(self, percentage_vac):
         for count_x in x_coord:
             for count_y in y_coord:
                 if matrix_mapper[count_x][count_y] == 1:
-                    self.matrix.SetPixel(count_x, count_y, c, 0, 0)
+                    self.matrix.SetPixel(count_x, count_y, 255, 51, 51)
                 elif matrix_mapper[count_x][count_y] == 2:
-                    self.matrix.SetPixel(count_x, count_y, 0, c, 0)
+                    self.matrix.SetPixel(count_x, count_y, 51, 255, 51)
                 elif matrix_mapper[count_x][count_y] == 3:
-                    self.matrix.SetPixel(count_x, count_y, 0, 0, c)
+                    self.matrix.SetPixel(count_x, count_y, 0, 170, 255)
         break
     return matrix_mapper
     
@@ -101,7 +105,7 @@ def spread_sequence(self, matrix_mapper):
         end_spread_cycle_checker = countInfected(1, matrix_mapper)
         if(start_spread_cycle_checker == end_spread_cycle_checker):
             end_count += 1
-            if(end_count == 5):
+            if(end_count == 4):
                 return end_spread_cycle_checker
             
         
@@ -112,31 +116,56 @@ def map_to_matrix(self, i, j, matrix_mapper, c):
         if matrix_mapper[i][j] == 1:
         # Left Side of Square
             if matrix_mapper[i-1][j-1] == 3:
-                self.matrix.SetPixel(i-1, j-1, c, 0, 0)
+                self.matrix.SetPixel(i-1, j-1, 255, 51, 51)
                 matrix_mapper[i-1][j-1] = 1
             if matrix_mapper[i-1][j] == 3:
-                self.matrix.SetPixel(i-1, j, c, 0, 0)
+                self.matrix.SetPixel(i-1, j, 255, 51, 51)
                 matrix_mapper[i-1][j] = 1
             if matrix_mapper[i-1][j+1] == 3:
-                self.matrix.SetPixel(i-1, j+1, c, 0, 0)
+                self.matrix.SetPixel(i-1, j+1, 255, 51, 51)
                 matrix_mapper[i-1][j+1] = 1
         # Right Side of Square
             if matrix_mapper[i+1][j-1] == 3:
-                self.matrix.SetPixel(i+1, j-1, c, 0, 0)
+                self.matrix.SetPixel(i+1, j-1, 255, 51, 51)
                 matrix_mapper[i+1][j-1] = 1
             if matrix_mapper[i+1][j] == 3:
-                self.matrix.SetPixel(i+1, j, c, 0, 0)
+                self.matrix.SetPixel(i+1, j, 255, 51, 51)
                 matrix_mapper[i+1][j] = 1
             if matrix_mapper[i+1][j+1] == 3:
-                self.matrix.SetPixel(i+1, j+1, c, 0, 0)
+                self.matrix.SetPixel(i+1, j+1, 255, 51, 51)
                 matrix_mapper[i+1][j+1] = 1
         # Center of Square
             if matrix_mapper[i][j-1] == 3:
-                self.matrix.SetPixel(i, j-1, c, 0, 0)
+                self.matrix.SetPixel(i, j-1, 255, 51, 51)
                 matrix_mapper[i][j-1] = 1
             if matrix_mapper[i][j+1] == 3:
-                self.matrix.SetPixel(i, j+1, c, 0, 0)
+                self.matrix.SetPixel(i, j+1, 255, 51, 51)
                 matrix_mapper[i][j+1] = 1
+                
+def printToSreen(self, infected):
+    #TODO Should be percentage Vulnerbale not total population
+    offscreen_canvas = self.matrix.CreateFrameCanvas()
+    font = graphics.Font()
+    textColor = graphics.Color(230, 230, 230)
+    bottom_text = "infected"
+    
+    print(str(infected))
+    percentage_infected = str(int((infected/1024) * 100))
+    print("percentage infected", percentage_infected)
+
+    while True:
+        offscreen_canvas.Clear()
+        font.LoadFont("./fonts/10x20.bdf")
+        graphics.DrawText(offscreen_canvas, font, 1, 18, textColor, percentage_infected + "%")
+        font.LoadFont("./fonts/4x6.bdf")
+        graphics.DrawText(offscreen_canvas, font, 1, 26, textColor, bottom_text)
+        
+        time.sleep(2)
+        offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
+        time.sleep(5)
+        offscreen_canvas.Clear()
+        return
+    
                 
 def countInfected(red, list):
     return sum([i.count(red) for i in list])
