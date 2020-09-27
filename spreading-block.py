@@ -6,10 +6,13 @@ import random as rand
 class SpreadingColour(SampleBase):
     def __init__(self, *args, **kwargs):
         super(SpreadingColour, self).__init__(*args, **kwargs)
+        self.parser.add_argument("--protected", help="The Percentage protected",type=int, default=50)
 
     def run(self):
         
-        PERCENTAGE_VAC = 30
+        PERCENTAGE_VAC = self.args.protected
+        
+        print("Percentage Protected:  ", PERCENTAGE_VAC)
     
         matrix_mapper = start_sequence(self, PERCENTAGE_VAC)
         
