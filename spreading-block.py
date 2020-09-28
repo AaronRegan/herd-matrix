@@ -44,8 +44,6 @@ def start_sequence(self, percentage_vac):
     x_coord = rand.sample(range(32), 32)
     y_coord = rand.sample(range(32), 32)
     matrix_mapper = [[0 for x in range(32)] for y in range(32)]
-    
-    print(PERCENTAGE_GREEN)
 
     while (True):     
         for count_x in x_coord:
@@ -157,7 +155,6 @@ def printToSreen(self, infected):
     textColor = graphics.Color(230, 230, 230)
     bottom_text = "infected"
     
-    print("Develop", str(infected))
     percentage_infected = str((infected*100)//1024) + "%"
     print("percentage infected", percentage_infected)
 
