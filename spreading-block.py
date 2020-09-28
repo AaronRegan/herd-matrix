@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 from samplebase import SampleBase
 from rgbmatrix import graphics
+from itertools import chain
 import random as rand
+import numpy as np
 import time
 
 
 class SpreadingColour(SampleBase):
     def __init__(self, *args, **kwargs):
         super(SpreadingColour, self).__init__(*args, **kwargs)
-        self.parser.add_argument("--protected", help="The Percentage protected",type=int, default=50)
+        self.parser.add_argument("--protected", help="The Percentage protected",type=int, default=60)
 
     def run(self):
 
@@ -63,6 +65,11 @@ def start_sequence(self, percentage_vac):
                     blue_count += 1
                     if blue_count >= PERCENTAGE_BLUE:
                         colours.remove(3)
+        
+        matrix_mapper = list(chain.from_iterable(matrix_mapper))
+        rand.shuffle(matrix_mapper)
+        
+        matrix_mapper = np.array(matrix_mapper).reshape(32, 32).tolist()
                         
         print("Green Count", green_count)
         print("Blue Count", blue_count)
