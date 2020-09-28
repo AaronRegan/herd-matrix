@@ -10,7 +10,7 @@ import time
 class SpreadingColour(SampleBase):
     def __init__(self, *args, **kwargs):
         super(SpreadingColour, self).__init__(*args, **kwargs)
-        self.parser.add_argument("--protected", help="The Percentage protected",type=int, default=60)
+        self.parser.add_argument("--protected", help="The Percentage protected",type=int, default=50)
 
     def run(self):
 
@@ -98,17 +98,18 @@ def spread_sequence(self, matrix_mapper):
     end_count = 0
     while (True):
         start_spread_cycle_checker = countInfected(1, matrix_mapper)
-        for i in range(32):
-            self.usleep(1 * 1000)
-            for j in range(32):
-                self.usleep(2 * 1000)
-                map_to_matrix(self, i, j, matrix_mapper, c)
-                            
-        for i in reversed(range(32)):
-            self.usleep(1 * 1000)
-            for j in reversed(range(32)):
-                self.usleep(2 * 1000)
-                map_to_matrix(self, i, j, matrix_mapper, c)
+        
+        infected_mapper = np.array(matrix_mapper)
+        infected_mapper = np.where(infected_mapper == 1)
+        
+        list_of_infected = list(zip(infected_mapper[0], infected_mapper[1]))
+        rand.shuffle(list_of_infected)
+        
+        for indice in list_of_infected:
+            self.usleep(1 * 3000)
+            map_to_matrix(self, indice[0], indice[1], matrix_mapper)
+        
+        
         end_spread_cycle_checker = countInfected(1, matrix_mapper)
         if(start_spread_cycle_checker == end_spread_cycle_checker):
             end_count += 1
@@ -118,7 +119,7 @@ def spread_sequence(self, matrix_mapper):
         
 
 # Map Pixels to LED Matrix
-def map_to_matrix(self, i, j, matrix_mapper, c):
+def map_to_matrix(self, i, j, matrix_mapper):
     if 0 < i < 31 and 0 < j < 31:
         if matrix_mapper[i][j] == 1:
         # Left Side of Square
