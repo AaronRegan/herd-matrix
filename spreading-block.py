@@ -10,7 +10,7 @@ import time
 class SpreadingColour(SampleBase):
     def __init__(self, *args, **kwargs):
         super(SpreadingColour, self).__init__(*args, **kwargs)
-        self.parser.add_argument("--protected", help="The Percentage protected",type=int, default=50)
+        self.parser.add_argument("--protected", help="The Percentage protected",type=int, default=60)
 
     def run(self):
 
@@ -113,7 +113,7 @@ def spread_sequence(self, matrix_mapper):
         end_spread_cycle_checker = countInfected(1, matrix_mapper)
         if(start_spread_cycle_checker == end_spread_cycle_checker):
             end_count += 1
-            if(end_count == 4):
+            if(end_count == 6):
                 return end_spread_cycle_checker
             
         
@@ -157,14 +157,14 @@ def printToSreen(self, infected):
     textColor = graphics.Color(230, 230, 230)
     bottom_text = "infected"
     
-    print(str(infected))
-    percentage_infected = str(int((infected/1024) * 100))
+    print("Develop", str(infected))
+    percentage_infected = str((infected*100)//1024) + "%"
     print("percentage infected", percentage_infected)
 
     while True:
         offscreen_canvas.Clear()
         font.LoadFont("./fonts/10x20.bdf")
-        graphics.DrawText(offscreen_canvas, font, 1, 18, textColor, percentage_infected + "%")
+        graphics.DrawText(offscreen_canvas, font, 1, 18, textColor, percentage_infected)
         font.LoadFont("./fonts/4x6.bdf")
         graphics.DrawText(offscreen_canvas, font, 1, 26, textColor, bottom_text)
         
